@@ -16,6 +16,10 @@ using namespace std;
 #include "material.h"
 #include "camera.h"
 #include "../vecmath/vecmath.h"
+//#include "../ui/TraceUI.h"
+
+
+//extern TraceUI* traceUI;
 
 class Light;
 class Scene;
@@ -264,9 +268,17 @@ public:
 
 	bool intersect( const ray& r, isect& i ) const;
 	void initScene();
+
+	void setAmbient(vec3f AmbientLight) {
+		m_AmbientLight = AmbientLight;
+		m_AmbientLight.clamp();
+	}
 	vec3f getAmbient() const {
+		//double AmbientLight_value = traceUI->getAmbientLight();
+		//vec3f AmbientLight(AmbientLight_value, AmbientLight_value, AmbientLight_value);
 		return m_AmbientLight;
 	}
+	
 
 	list<Light*>::const_iterator beginLights() const { return lights.begin(); }
 	list<Light*>::const_iterator endLights() const { return lights.end(); }
@@ -286,6 +298,7 @@ private:
 	// must fall within this bounding box.  Objects that don't have hasBoundingBoxCapability()
 	// are exempt from this requirement.
 	BoundingBox sceneBounds;
+	vec3f m_AmbientLight;
 };
 
 #endif // __SCENE_H__

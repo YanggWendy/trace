@@ -15,7 +15,8 @@ bool Box::intersectLocal( const ray& r, isect& i ) const
 
 	//numeric_limits<double> doubleLimit;
 	//double Tfar = doubleLimit.infinity(), Tnear = -Tfar;
-	double Tfar = DBL_MAX, Tnear = -Tfar;
+	double Tfar = DBL_MAX;
+	double Tnear = -Tfar;
 	vec3f Nnear, Nfar;
 
 	vec3f& d = r.getDirection();

@@ -7,6 +7,8 @@ class Light
 	: public SceneElement
 {
 public:
+
+
 	virtual vec3f shadowAttenuation(const vec3f& P) const = 0;
 	virtual double distanceAttenuation( const vec3f& P ) const = 0;
 	virtual vec3f getColor( const vec3f& P ) const = 0;
@@ -38,15 +40,20 @@ class PointLight
 	: public Light
 {
 public:
-	PointLight( Scene *scene, const vec3f& pos, const vec3f& color )
-		: Light( scene, color ), position( pos ) {}
+
+	PointLight(Scene* scene, const vec3f& pos, const vec3f& color);
 	virtual vec3f shadowAttenuation(const vec3f& P) const;
 	virtual double distanceAttenuation( const vec3f& P ) const;
 	virtual vec3f getColor( const vec3f& P ) const;
+	virtual void setAttenuationCoefficient(double constant, double linear, double quadratic);
 	virtual vec3f getDirection( const vec3f& P ) const;
 
 protected:
 	vec3f position;
+	double m_const_atten_coef;
+	double	m_linear_atten_coef;
+	double	m_quadratic_atten_coef;
+
 };
 
 #endif // __LIGHT_H__

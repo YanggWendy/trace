@@ -8,6 +8,10 @@
 #include "scene/ray.h"
 #include "fileio/read.h"
 #include "fileio/parse.h"
+#include "ui/TraceUI.h"
+
+
+extern TraceUI* traceUI;
 
 // Trace a top-level ray through normalized window coordinates (x,y)
 // through the projection plane, and out into the scene.  All we do is
@@ -30,22 +34,62 @@ vec3f RayTracer::traceRay( Scene *scene, const ray& r,
 	vec3f shade;
 
 	if( scene->intersect( r, i ) ) {
-		// YOUR CODE HERE
+		vec3f I;
 		vec3f P = r.at(i.t);
-		vec3f I = i.getMaterial().shade(scene, r, i);
-		vec3f R = reflect
+		I += i.getMaterial().shade(scene, r, i);// shade
+		if (depth >= traceUI->getDepth())
+		{
+			return I;
+		}
 
-		// An intersection occured!  We've got work to do.  For now,
-		// this code gets the material for the surface that was intersected,
-		// and asks that material to provide a color for the ray.  
+		vec3f norm = i.N;
+		vec3f dir = r.getDirection();
+		vec3f R = ((2 * (norm.dot(dir)) * norm) - dir).normalize();
+		ray new_ray(P,R);
+		if (!i.getMaterial().kr.iszero())
+		{
+			I +=  prod(i.getMaterial().kr, traceRay(scene, new_ray, thresh, depth + 1));
+		}
+		if (!i.getMaterial().kt.iszero())
+		{
+			
+		}if (!i.getMaterial().kt.iszero())
+		{
+			// take account total refraction effect
+			/*bool TotalRefraction = false;
+			// opposite ray
+			ray oppR(P, r.getDirection()); //without refraction
 
-		// This is a great place to insert code for recursive ray tracing.
-		// Instead of just returning the result of shade(), add some
-		// more steps: add in the contributions from reflected and refracted
-		// rays.
+			// marker to simulate a stack
+			bool toAdd = false, toErase = false;
 
-		const Material& m = i.getMaterial();
-		return m.shade(scene, r, i);
+			// For now, the interior is just hardcoded
+			// That is, we judge it according to cap and whether it is box
+			
+				// For ray get in the object
+				
+				double indexRatio = indexA / indexB;
+				double cos_i = max(min(normal * ((-r.getDirection()).normalize()), 1.0), -1.0); //SYSNOTE: min(x, 1.0) to prevent cos_i becomes bigger than 1
+				double sin_i = sqrt(1 - cos_i * cos_i);
+				double sin_t = sin_i * indexRatio;
+
+				if (sin_t > 1.0)
+				{
+					TotalRefraction = true;
+				}
+				else
+				{
+					TotalRefraction = false;
+					double cos_t = sqrt(1 - sin_t * sin_t);
+					vec3f Tdir = (indexRatio * cos_i - cos_t) * normal - indexRatio * -r.getDirection();
+					oppR = ray(conPoint, Tdir);
+					shade += prod(i.getMaterial().kt, traceRay(scene, oppR, thresh, depth + 1));
+				}*/
+			}
+
+
+		I = I.clamp();
+		return I;
 	
 	} else {
 		// No intersection.  This ray travels to infinity, so we color
