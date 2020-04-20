@@ -1,6 +1,9 @@
 #include "ray.h"
 #include "material.h"
 #include "light.h"
+#include "../ui/TraceUI.h"
+
+extern TraceUI* traceUI;
 
 // Apply the phong model to this point on the surface of the object, returning
 // the color of that point.
@@ -27,7 +30,11 @@ vec3f Material::shade( Scene *scene, const ray& r, const isect& i ) const
 	vec3f transparency = vec3f(1, 1, 1) - kt;
 
 	// Handle ambient light effect
-	vec3f ambient = prod(ka, scene->getAmbient());
+	double AmbientLight_value = traceUI->getAmbientLight();
+	//vec3f AmbientLight(AmbientLight_value, AmbientLight_value, AmbientLight_value);
+	//vec3f ambient = prod(ka, AmbientLight);
+	vec3f ambient = ka* AmbientLight_value;
+
 
 	I += prod(transparency, ambient);
 

@@ -10,6 +10,8 @@
 #include "fileio/parse.h"
 #include "ui/TraceUI.h"
 
+#include <iostream>
+using namespace std;
 
 extern TraceUI* traceUI;
 
@@ -41,6 +43,7 @@ vec3f RayTracer::traceRay( Scene *scene, const ray& r,
 		{
 			return I;
 		}
+		cout << "intersect" << endl;
 
 		vec3f norm = i.N;
 		vec3f dir = r.getDirection();
@@ -50,42 +53,59 @@ vec3f RayTracer::traceRay( Scene *scene, const ray& r,
 		{
 			I +=  prod(i.getMaterial().kr, traceRay(scene, new_ray, thresh, depth + 1));
 		}
+		
 		if (!i.getMaterial().kt.iszero())
 		{
-			
-		}if (!i.getMaterial().kt.iszero())
-		{
 			// take account total refraction effect
-			/*bool TotalRefraction = false;
+			bool TotalRefraction = false;
 			// opposite ray
 			ray oppR(P, r.getDirection()); //without refraction
 
 			// marker to simulate a stack
-			bool toAdd = false, toErase = false;
+			//bool toAdd = false, toErase = false;
 
-			// For now, the interior is just hardcoded
-			// That is, we judge it according to cap and whether it is box
-			
-				// For ray get in the object
-				
-				double indexRatio = indexA / indexB;
-				double cos_i = max(min(normal * ((-r.getDirection()).normalize()), 1.0), -1.0); //SYSNOTE: min(x, 1.0) to prevent cos_i becomes bigger than 1
-				double sin_i = sqrt(1 - cos_i * cos_i);
-				double sin_t = sin_i * indexRatio;
 
-				if (sin_t > 1.0)
-				{
-					TotalRefraction = true;
-				}
-				else
-				{
-					TotalRefraction = false;
-					double cos_t = sqrt(1 - sin_t * sin_t);
-					vec3f Tdir = (indexRatio * cos_i - cos_t) * normal - indexRatio * -r.getDirection();
-					oppR = ray(conPoint, Tdir);
-					shade += prod(i.getMaterial().kt, traceRay(scene, oppR, thresh, depth + 1));
-				}*/
+				// refractive index
+			double index_i, index_t;
+
+			// For ray go out of an object
+			if (i.N * r.getDirection() > RAY_EPSILON)
+			{
+
+				index_i = i.getMaterial().index;
+
+				index_t = 1.0;
+
+				norm = -i.N;
 			}
+			// For ray get in the object
+			else
+			{
+				index_t = i.getMaterial().index;
+
+				index_i = 1.0;
+				norm = i.N;
+			}
+
+
+			double index_Ratio = index_i / index_t;
+			double cos_i = max(min(norm * ((-r.getDirection()).normalize()), 1.0), -1.0); //SYSNOTE: min(x, 1.0) to prevent cos_i becomes bigger than 1
+			double sin_i = sqrt(1 - cos_i * cos_i);
+			double sin_t = sin_i * index_Ratio;
+
+			if (sin_t > 1.0)
+			{
+				TotalRefraction = true;
+			}
+			else
+			{
+				TotalRefraction = false;
+				double cos_t = sqrt(1 - sin_t * sin_t);
+				vec3f Tdir = (index_Ratio * cos_i - cos_t) * norm - index_Ratio * -r.getDirection();
+				oppR = ray(P, Tdir);
+				I += prod(i.getMaterial().kt, traceRay(scene, oppR, thresh, depth + 1));
+			}
+		}
 
 
 		I = I.clamp();
