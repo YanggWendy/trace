@@ -43,10 +43,10 @@ vec3f RayTracer::traceRay( Scene *scene, const ray& r,
 		{
 			return I;
 		}
-		cout << "intersect" << endl;
+		//cout << "intersect" << endl;
 
 		vec3f norm = i.N;
-		vec3f dir = r.getDirection();
+		vec3f dir = -r.getDirection();
 		vec3f R = ((2 * (norm.dot(dir)) * norm) - dir).normalize();
 		ray new_ray(P,R);
 		if (!i.getMaterial().kr.iszero())

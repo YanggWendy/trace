@@ -270,7 +270,7 @@ public:
 	void initScene();
 
 	void setAmbient(vec3f AmbientLight) {
-		m_AmbientLight = AmbientLight;
+		m_AmbientLight += AmbientLight;
 		m_AmbientLight.clamp();
 	}
 	vec3f getAmbient() const {

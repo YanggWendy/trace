@@ -268,6 +268,13 @@ TraceUI::TraceUI() {
 	// init.
 	m_nDepth = 0;
 	m_nSize = 150;
+	m_nAttenuation_Constant = 0.25;
+	m_nAttenuation_Linear = 0.25;
+	m_nAttenuation_Quadric = 0.50;
+	m_nAmbientLight = 0.20;
+	m_nThreshold = 0;
+
+
 	m_mainWindow = new Fl_Window(100, 40, 320, 300, "Ray <Not Loaded>");
 		m_mainWindow->user_data((void*)(this));	// record self to be used by static callback functions
 		// install menu bar

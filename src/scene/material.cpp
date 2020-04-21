@@ -29,11 +29,13 @@ vec3f Material::shade( Scene *scene, const ray& r, const isect& i ) const
 	// Handle transparency by transmissive light
 	vec3f transparency = vec3f(1, 1, 1) - kt;
 
+	
 	// Handle ambient light effect
-	double AmbientLight_value = traceUI->getAmbientLight();
+
+	//double AmbientLight_value = traceUI->getAmbientLight();
 	//vec3f AmbientLight(AmbientLight_value, AmbientLight_value, AmbientLight_value);
 	//vec3f ambient = prod(ka, AmbientLight);
-	vec3f ambient = ka* AmbientLight_value;
+	vec3f ambient = prod(ka,scene->getAmbient());
 
 
 	I += prod(transparency, ambient);

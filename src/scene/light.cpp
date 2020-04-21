@@ -60,9 +60,9 @@ vec3f DirectionalLight::getDirection( const vec3f& P ) const
 PointLight::PointLight(Scene* scene, const vec3f& pos, const vec3f& color)
 	: Light(scene, color),
 	position(pos),
-	m_const_atten_coef(0.0),
-	m_linear_atten_coef(0.0),
-	m_quadratic_atten_coef(0.0)
+	m_const_atten_coeff(0.0),
+	m_linear_atten_coeff(0.0),
+	m_quadratic_atten_coeff(0.0)
 {}
 
 double PointLight::distanceAttenuation( const vec3f& P ) const
@@ -72,15 +72,14 @@ double PointLight::distanceAttenuation( const vec3f& P ) const
 	// point P.  For now, I assume no attenuation and just return 1.0
 
 
-	//setAttenuationCoefficient(traceUI->getAttenuation_Constant(), traceUI->getAttenuation_Linear(), traceUI->getAttenuation_Quadric());
-	double const_atten_coef = traceUI->getAttenuation_Constant();
+	/*double const_atten_coef = traceUI->getAttenuation_Constant();
 	double linear_atten_coef = traceUI->getAttenuation_Linear();
-	double quadratic_atten_coef = traceUI->getAttenuation_Quadric();
+	double quadratic_atten_coef = traceUI->getAttenuation_Quadric();*/
 	
 	
 	double d_square = (P - position).length_squared();
 	double d = sqrt(d_square);
-	double coef = const_atten_coef + linear_atten_coef * d + quadratic_atten_coef * d_square;
+	double coef = m_const_atten_coeff + m_linear_atten_coeff * d + m_quadratic_atten_coeff * d_square;
 	return coef == 0.0 ? 1.0 : 1.0 / max<double>(coef, 1.0);
 }
 
@@ -127,7 +126,28 @@ vec3f PointLight::shadowAttenuation(const vec3f& P) const
 
 void  PointLight::setAttenuationCoefficient(double constant, double linear, double quadratic)
 {
-	m_const_atten_coef = constant;
-	m_linear_atten_coef = linear;
-	m_quadratic_atten_coef = quadratic;
+	m_const_atten_coeff = constant;
+	m_linear_atten_coeff = linear;
+	m_quadratic_atten_coeff = quadratic;
+}
+
+double AmbientLight::distanceAttenuation(const vec3f& P) const
+{
+	return 1.0;
+}
+
+vec3f AmbientLight::getColor(const vec3f& P) const
+{
+	return color;
+}
+
+vec3f AmbientLight::getDirection(const vec3f& P) const
+{
+	return vec3f(1, 1, 1);
+}
+
+
+vec3f AmbientLight::shadowAttenuation(const vec3f& P) const
+{
+	return vec3f(1, 1, 1);
 }
