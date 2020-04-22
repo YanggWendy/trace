@@ -93,7 +93,7 @@ vec3f RayTracer::traceRay( Scene *scene, const ray& r,
 			double sin_i = sqrt(1 - cos_i * cos_i);
 			double sin_t = sin_i * index_Ratio;
 
-			if (sin_t > 1.0)
+			if (sin_t >1.0)
 			{
 				TotalRefraction = true;
 			}
@@ -101,7 +101,7 @@ vec3f RayTracer::traceRay( Scene *scene, const ray& r,
 			{
 				TotalRefraction = false;
 				double cos_t = sqrt(1 - sin_t * sin_t);
-				vec3f Tdir = (index_Ratio * cos_i - cos_t) * norm - index_Ratio * -r.getDirection();
+				vec3f Tdir = (index_Ratio * cos_i - cos_t) * norm - index_Ratio * (-r.getDirection());
 				oppR = ray(P, Tdir);
 				I += prod(i.getMaterial().kt, traceRay(scene, oppR, thresh, depth + 1));
 			}

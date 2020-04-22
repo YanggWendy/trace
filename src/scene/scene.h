@@ -276,6 +276,7 @@ public:
 	vec3f getAmbient() const {
 		//double AmbientLight_value = traceUI->getAmbientLight();
 		//vec3f AmbientLight(AmbientLight_value, AmbientLight_value, AmbientLight_value);
+		//cout << "m_AmbientLight = " << m_AmbientLight[0] <<","<< m_AmbientLight[1]<<"," << m_AmbientLight[2] <<endl;
 		return m_AmbientLight;
 	}
 	
