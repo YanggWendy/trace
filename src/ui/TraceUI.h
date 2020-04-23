@@ -33,6 +33,7 @@ public:
 	Fl_Slider*			m_AttenuationQuadricSlider;
 	Fl_Slider*			m_AmbientLightSlider;
 	Fl_Slider*			m_ThresholdSlider;
+	Fl_Slider*			m_useGlossySlider;
 
 	Fl_Button*			m_renderButton;
 	Fl_Button*			m_stopButton;
@@ -51,6 +52,7 @@ public:
 	double		getAttenuation_Quadric();
 	double		getAmbientLight();
 	double		getThreshold();
+	int			getuseGlossy();
 
 private:
 	RayTracer*	raytracer;
@@ -62,6 +64,7 @@ private:
 	double		m_nAttenuation_Quadric;
 	double		m_nAmbientLight;
 	double		m_nThreshold;
+	int			m_useGlossy;
 // static class members
 	static Fl_Menu_Item menuitems[];
 
@@ -69,6 +72,7 @@ private:
 
 	static void cb_load_scene(Fl_Menu_* o, void* v);
 	static void cb_save_image(Fl_Menu_* o, void* v);
+	static void cb_background_image(Fl_Menu_* o, void* v);
 	static void cb_exit(Fl_Menu_* o, void* v);
 	static void cb_about(Fl_Menu_* o, void* v);
 
@@ -81,6 +85,7 @@ private:
 	static void cb_Attenuation_QuadricSlides(Fl_Widget* o, void* v);
 	static void cb_AmbientLightSlides(Fl_Widget* o, void* v);
 	static void cb_ThresholdSlides(Fl_Widget* o, void* v);
+	static void cb_useGlossySlides(Fl_Widget* o, void* v);
 
 	static void cb_render(Fl_Widget* o, void* v);
 	static void cb_stop(Fl_Widget* o, void* v);

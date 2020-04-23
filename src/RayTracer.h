@@ -23,8 +23,9 @@ public:
 	void tracePixel( int i, int j );
 
 	bool loadScene( char* fn );
-
+	void loadBackground(char* file);
 	bool sceneLoaded();
+	vec3f getBackgroundImage(double x, double y);
 
 private:
 	unsigned char *buffer;
@@ -33,6 +34,10 @@ private:
 	Scene *scene;
 
 	bool m_bSceneLoaded;
+	int background_width;
+	int background_height;
+	unsigned char* backgroundImage;
+	bool m_useBackground;
 };
 
 #endif // __RAYTRACER_H__

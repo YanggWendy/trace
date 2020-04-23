@@ -1,10 +1,11 @@
 #include <cmath>
-
+#include <math.h>
 #include "light.h"
-
 #include "../ui/TraceUI.h"
 #include <iostream>
 using namespace std;
+
+#define PI acos(-1)
 
 extern TraceUI* traceUI;
 
@@ -52,7 +53,7 @@ vec3f DirectionalLight::getDirection( const vec3f& P ) const
 }
 
 PointLight::PointLight(Scene* scene, const vec3f& pos, const vec3f& color)
-	: Light(scene, color),position(pos)
+	: Light(scene, color),position(pos), m_const_atten_coeff(0.0) ,m_linear_atten_coeff(0.0),m_quadratic_atten_coeff(0.0)
 {}
 
 double PointLight::distanceAttenuation( const vec3f& P ) const
@@ -69,7 +70,7 @@ double PointLight::distanceAttenuation( const vec3f& P ) const
 	
 	double d_square = (P - position).length_squared();
 	double d = sqrt(d_square);
-	double coef = m_const_atten_coeff + m_linear_atten_coeff * d + m_quadratic_atten_coeff * d_square;
+	double coef = (m_const_atten_coeff+ traceUI->getAttenuation_Constant()) + (m_linear_atten_coeff+ traceUI->getAttenuation_Linear()) * d + (m_quadratic_atten_coeff+ (traceUI->getAttenuation_Quadric())* traceUI->getAttenuation_Quadric()) * d_square;
 	//double coef = const_atten_coeff + linear_atten_coeff * d + quadratic_atten_coeff * d_square;
 	//cout << " m_const_atten_coeff = " << m_const_atten_coeff << endl;
 	//cout << " m_linear_atten_coeff = " << m_linear_atten_coeff << endl;
@@ -142,4 +143,79 @@ vec3f AmbientLight::getDirection(const vec3f& P) const
 vec3f AmbientLight::shadowAttenuation(const vec3f& P) const
 {
 	return vec3f(1, 1, 1);
+}
+
+
+vec3f SpotLight::shadowAttenuation(const vec3f& P) const
+{
+	double cos_space = cos(edgeplace[0] * PI / 180);
+	double distance = (position - P).length();
+	vec3f d = getDirection(P);
+	// loop to get the attenuation
+	vec3f cur_P = P;
+	isect isec_P;
+	vec3f result = getColor(P);
+	ray r = ray(cur_P, d);
+
+	double cos_actual = -d.normalize().dot(direction.normalize());
+	if (cos_space> cos_actual) {return vec3f(0, 0, 0);}
+
+	while (scene->intersect(r, isec_P))
+	{
+		
+		if ((distance -= isec_P.t) < RAY_EPSILON) return result;
+		//if not transparent return black
+		if (isec_P.getMaterial().kt.iszero())
+		{
+			return vec3f(0, 0, 0);
+		}
+		//use current intersection point as new light source
+		cur_P = r.at(isec_P.t);
+		r = ray(cur_P, d);
+		result = prod(result, isec_P.getMaterial().kt);
+
+	}
+	return result;
+}
+
+
+double SpotLight::distanceAttenuation(const vec3f& P) const
+{
+	double d_square = (P - position).length_squared();
+	double d = sqrt(d_square);
+	double coef = (m_const_atten_coeff + traceUI->getAttenuation_Constant()) + (m_linear_atten_coeff + traceUI->getAttenuation_Linear()) * d + (m_quadratic_atten_coeff + sqrt(traceUI->getAttenuation_Quadric())) * d_square;
+	//double coef = const_atten_coeff + linear_atten_coeff * d + quadratic_atten_coeff * d_square;
+	//cout << " m_const_atten_coeff = " << m_const_atten_coeff << endl;
+	//cout << " m_linear_atten_coeff = " << m_linear_atten_coeff << endl;
+	//cout << " m_quadratic_atten_coeff = " << m_quadratic_atten_coeff << endl;
+	return coef == 0.0 ? 1.0 : 1.0 / max<double>(coef, 1.0);
+}
+
+
+vec3f SpotLight::getDirection(const vec3f& P) const
+{
+	return (position - P).normalize();;
+}
+
+
+vec3f SpotLight::getEdgeplace(const vec3f& P) const
+{
+	return edgeplace;
+}
+
+vec3f SpotLight::getPosition(const vec3f& P) const
+{
+	return position;
+}
+
+vec3f  SpotLight::getColor(const vec3f& P) const
+{
+	return color;
+}
+
+void  SpotLight::setAttenuationCoefficient(double constant, double linear, double quadratic)
+{
+	m_const_atten_coeff = constant;
+	m_linear_atten_coeff = linear;
+	m_quadratic_atten_coeff = quadratic;
 }

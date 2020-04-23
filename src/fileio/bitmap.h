@@ -1,5 +1,5 @@
 //
-// bitmap.h
+//readBMP
 //
 // header file for MS bitmap format
 //

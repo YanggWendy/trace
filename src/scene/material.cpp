@@ -50,11 +50,13 @@ vec3f Material::shade( Scene *scene, const ray& r, const isect& i ) const
 		double angle = maximum(norm.dot(light_dir), 0.0);
 		vec3f diffuse = prod(kd * angle, transparency);
 		//cout << "kd = " << kd[0]<<","<< kd[1]<< "," << kd[2]<<endl;
+		//cout << 1 << endl;
 
 		vec3f R = ((2 * (norm.dot(light_dir)) * norm) - light_dir).normalize();
 		vec3f specular = ks * (pow(maximum(R * (-r.getDirection()), 0), shininess * 128.0));
 		I += prod(attenuation, diffuse + specular);
 	}
+	//cout << 2 << endl;
 	I = I.clamp();
 
 	return I;

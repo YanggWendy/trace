@@ -71,4 +71,29 @@ private:
 };
 
 
+class SpotLight
+	: public Light
+{
+public:
+	SpotLight(Scene* scene, const vec3f& pos, const vec3f& edge, const vec3f& dir, const vec3f& color)
+		: Light(scene, color), position(pos), edgeplace(edge), direction(dir), m_const_atten_coeff(0.0), m_linear_atten_coeff(0.0), m_quadratic_atten_coeff(0.0) {}
+	virtual vec3f shadowAttenuation(const vec3f& P) const;
+	virtual double distanceAttenuation(const vec3f& P) const;
+	virtual vec3f getColor(const vec3f& P) const;
+	virtual vec3f getDirection(const vec3f& P) const;
+	vec3f getEdgeplace(const vec3f& P) const;
+	vec3f getPosition(const vec3f& P) const;
+	void  setAttenuationCoefficient(double constant, double linear, double quadratic);
+
+protected:
+	vec3f 		position;
+	vec3f 		direction;
+	vec3f 		edgeplace;
+	double m_const_atten_coeff;
+	double	m_linear_atten_coeff;
+	double	m_quadratic_atten_coeff;
+};
+
+
+
 #endif // __LIGHT_H__

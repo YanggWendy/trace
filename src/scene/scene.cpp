@@ -199,3 +199,11 @@ void Scene::initScene()
 			nonboundedobjects.push_back(*j);
 	}
 }
+
+
+vec3f Scene::getAmbient() const {
+	//double AmbientLight_value = traceUI->getAmbientLight();
+	vec3f AmbientLight = traceUI->getAmbientLight()* m_AmbientLight;
+	//cout << "m_AmbientLight = " << m_AmbientLight[0] <<","<< m_AmbientLight[1]<<"," << m_AmbientLight[2] <<endl;
+	return AmbientLight;
+}

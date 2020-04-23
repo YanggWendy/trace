@@ -478,6 +478,13 @@ inline vec4f operator *( const vec4f& v, mat4f& a )
 	return a.transpose() * v;
 }
 
+inline vec3f operator ^(const vec3f& a, const vec3f& b)
+{
+	return vec3f(a.n[1] * b.n[2] - a.n[2] * b.n[1],
+		a.n[2] * b.n[0] - a.n[0] * b.n[2],
+		a.n[0] * b.n[1] - a.n[1] * b.n[0]);
+}
+
 inline vec4f operator /(const vec4f& a, const double d)
 {
 	return vec4f( a.n[0] / d, a.n[1] / d, a.n[2] / d, a.n[3] / d );

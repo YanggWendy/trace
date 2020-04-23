@@ -16,10 +16,7 @@ using namespace std;
 #include "material.h"
 #include "camera.h"
 #include "../vecmath/vecmath.h"
-//#include "../ui/TraceUI.h"
 
-
-//extern TraceUI* traceUI;
 
 class Light;
 class Scene;
@@ -273,13 +270,7 @@ public:
 		m_AmbientLight += AmbientLight;
 		m_AmbientLight.clamp();
 	}
-	vec3f getAmbient() const {
-		//double AmbientLight_value = traceUI->getAmbientLight();
-		//vec3f AmbientLight(AmbientLight_value, AmbientLight_value, AmbientLight_value);
-		//cout << "m_AmbientLight = " << m_AmbientLight[0] <<","<< m_AmbientLight[1]<<"," << m_AmbientLight[2] <<endl;
-		return m_AmbientLight;
-	}
-	
+	vec3f getAmbient() const;
 
 	list<Light*>::const_iterator beginLights() const { return lights.begin(); }
 	list<Light*>::const_iterator endLights() const { return lights.end(); }

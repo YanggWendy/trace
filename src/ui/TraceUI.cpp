@@ -51,6 +51,18 @@ void TraceUI::cb_save_image(Fl_Menu_* o, void* v)
 	}
 }
 
+void TraceUI::cb_background_image(Fl_Menu_* o, void* v)
+{
+
+	TraceUI* pUI = whoami(o);
+
+	char* newfile = fl_file_chooser("Open Image?", "*.bmp", NULL);
+	if (newfile != NULL)
+	{
+		pUI->raytracer->loadBackground(newfile);
+	}
+}
+
 void TraceUI::cb_exit(Fl_Menu_* o, void* v)
 {
 	TraceUI* pUI=whoami(o);
@@ -117,6 +129,11 @@ void TraceUI::cb_AmbientLightSlides(Fl_Widget* o, void* v)
 void TraceUI::cb_ThresholdSlides(Fl_Widget* o, void* v)
 {
 	((TraceUI*)(o->user_data()))->m_nThreshold = double(((Fl_Slider*)o)->value());
+}
+
+void TraceUI::cb_useGlossySlides(Fl_Widget* o, void* v)
+{
+	((TraceUI*)(o->user_data()))->m_useGlossy = int(((Fl_Slider*)o)->value());
 }
 
 
@@ -248,11 +265,17 @@ double TraceUI::getThreshold()
 	return m_nThreshold;
 }
 
+int	TraceUI::getuseGlossy()
+{
+	return m_useGlossy;
+}
+
 
 // menu definition
 Fl_Menu_Item TraceUI::menuitems[] = {
 	{ "&File",		0, 0, 0, FL_SUBMENU },
 		{ "&Load Scene...",	FL_ALT + 'l', (Fl_Callback *)TraceUI::cb_load_scene },
+		{ "&Load Background...",	FL_ALT + 's', (Fl_Callback*)TraceUI::cb_background_image },
 		{ "&Save Image...",	FL_ALT + 's', (Fl_Callback *)TraceUI::cb_save_image },
 		{ "&Exit",			FL_ALT + 'e', (Fl_Callback *)TraceUI::cb_exit },
 		{ 0 },
@@ -270,10 +293,10 @@ TraceUI::TraceUI() {
 	m_nSize = 150;
 	m_nAttenuation_Constant = 0.25;
 	m_nAttenuation_Linear = 0.25;
-	m_nAttenuation_Quadric = 0.50;
-	m_nAmbientLight = 0.20;
+	m_nAttenuation_Quadric = 0.10;
+	m_nAmbientLight = 0.80;
 	m_nThreshold = 0;
-
+	m_useGlossy = 0;
 
 	m_mainWindow = new Fl_Window(100, 40, 320, 300, "Ray <Not Loaded>");
 		m_mainWindow->user_data((void*)(this));	// record self to be used by static callback functions
@@ -374,6 +397,33 @@ TraceUI::TraceUI() {
 		m_ThresholdSlider->value(m_nThreshold);
 		m_ThresholdSlider->align(FL_ALIGN_RIGHT);
 		m_ThresholdSlider->callback(cb_ThresholdSlides);
+
+
+		m_useGlossySlider = new Fl_Value_Slider(10, 205, 180, 20, "Use Glossy");
+		m_useGlossySlider->user_data((void*)(this));	// record self to be used by static callback functions
+		m_useGlossySlider->type(FL_HOR_NICE_SLIDER);
+		m_useGlossySlider->labelfont(FL_COURIER);
+		m_useGlossySlider->labelsize(12);
+		m_useGlossySlider->minimum(0);
+		m_useGlossySlider->maximum(1);
+		m_useGlossySlider->step(1);
+		m_useGlossySlider->value(m_useGlossy);
+		m_useGlossySlider->align(FL_ALIGN_RIGHT);
+		m_useGlossySlider->callback(cb_useGlossySlides);
+
+
+		/*m_ThresholdSlider = new Fl_Value_Slider(10, 230, 180, 20, "Threshold");
+		m_ThresholdSlider->user_data((void*)(this));	// record self to be used by static callback functions
+		m_ThresholdSlider->type(FL_HOR_NICE_SLIDER);
+		m_ThresholdSlider->labelfont(FL_COURIER);
+		m_ThresholdSlider->labelsize(12);
+		m_ThresholdSlider->minimum(0);
+		m_ThresholdSlider->maximum(1);
+		m_ThresholdSlider->step(0.01);
+		m_ThresholdSlider->value(m_nThreshold);
+		m_ThresholdSlider->align(FL_ALIGN_RIGHT);
+		m_ThresholdSlider->callback(cb_ThresholdSlides);*/
+
 
 		m_renderButton = new Fl_Button(240, 27, 70, 25, "&Render");
 		m_renderButton->user_data((void*)(this));

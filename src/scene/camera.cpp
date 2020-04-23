@@ -83,8 +83,7 @@ Camera::setAspectRatio( double ar )
     update();
 }
 
-void
-Camera::update()
+void Camera::update()
 {
     u = m * vec3f( 1,0,0 ) * normalizedHeight*aspectRatio;
     v = m * vec3f( 0,1,0 ) * normalizedHeight;
@@ -92,5 +91,18 @@ Camera::update()
 }
 
 
+vec3f Camera::getU()
+{
+    return u;
+}
 
+vec3f Camera::getV()
+{
+    return v;
+}
+
+vec3f Camera::getLook()
+{
+    return look;
+}
 
