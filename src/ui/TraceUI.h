@@ -33,11 +33,19 @@ public:
 	Fl_Slider*			m_AttenuationQuadricSlider;
 	Fl_Slider*			m_AmbientLightSlider;
 	Fl_Slider*			m_ThresholdSlider;
-	Fl_Slider*			m_useGlossySlider;
+	Fl_Slider*			m_nSupersampleSizeSlider;
+	Fl_Slider*			m_nFocallengthSlider;
+	Fl_Slider*			m_nApertureSizeSlider;
 
 	Fl_Button*			m_renderButton;
 	Fl_Button*			m_stopButton;
-
+	Fl_Light_Button*	m_supersample;
+	Fl_Light_Button*	m_jitter;
+	Fl_Light_Button*	m_adaptive;
+	Fl_Light_Button*	m_dof;
+	Fl_Light_Button*	m_MotionBlur;
+	Fl_Light_Button*	m_useGlossyButton;
+	
 	TraceGLWindow*		m_traceGlWindow;
 
 	// member functions
@@ -53,6 +61,14 @@ public:
 	double		getAmbientLight();
 	double		getThreshold();
 	int			getuseGlossy();
+	int			getSupersampleSize();
+	int			getSupersample();
+	int			getjitter();
+	int			getadaptive();
+	int			getDOF();
+	int			getMotionBlur();
+	int			getFocallength();
+	int			getApertureSize();
 
 private:
 	RayTracer*	raytracer;
@@ -65,6 +81,15 @@ private:
 	double		m_nAmbientLight;
 	double		m_nThreshold;
 	int			m_useGlossy;
+	int			m_nSupersampleSize;
+	int			Supersample;
+	int			jitter;
+	int			adaptive;
+	int			DOF;
+	int			MotionBlur;
+	int        Focallength;
+	int			ApertureSize;
+
 // static class members
 	static Fl_Menu_Item menuitems[];
 
@@ -85,10 +110,18 @@ private:
 	static void cb_Attenuation_QuadricSlides(Fl_Widget* o, void* v);
 	static void cb_AmbientLightSlides(Fl_Widget* o, void* v);
 	static void cb_ThresholdSlides(Fl_Widget* o, void* v);
-	static void cb_useGlossySlides(Fl_Widget* o, void* v);
+	static void cb_useGlossy(Fl_Widget* o, void* v);
+	static void cb_SupersampleSize(Fl_Widget* o, void* v);
 
 	static void cb_render(Fl_Widget* o, void* v);
 	static void cb_stop(Fl_Widget* o, void* v);
+	static void cb_supersample(Fl_Widget* o, void* v);
+	static void cb_dof(Fl_Widget* o, void* v);
+	static void cb_MotionBlur(Fl_Widget* o, void* v);
+	static void cb_adaptive(Fl_Widget* o, void* v);
+	static void cb_jitter(Fl_Widget* o, void* v);
+	static void cb_Focallength(Fl_Widget* o, void* v);
+	static void cb_ApertureSize(Fl_Widget* o, void* v);
 };
 
 #endif

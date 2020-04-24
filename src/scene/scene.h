@@ -72,6 +72,10 @@ public:
    	typedef list<TransformNode*>::iterator          child_iter;
 	typedef list<TransformNode*>::const_iterator    child_citer;
 
+	TransformNode() {
+		numOfTimes = 0;
+	}
+
     ~TransformNode()
     {
         for(child_iter c = children.begin(); c != children.end(); ++c )
@@ -106,6 +110,19 @@ public:
         return (normi * v).normalize();
     }
 
+
+	void motionBlurDeltaTransform() {
+		xform = motionBlurDelta * xform;
+		inverse = xform.inverse();
+		numOfTimes++;
+	}
+	void resetMotionBlurTransform() {
+		mat4f restore = mat4f::translate(vec3f(-0.01 * numOfTimes, -0.01 * numOfTimes, -0.01 * numOfTimes));
+		xform = restore * xform;
+		inverse = xform.inverse();
+		numOfTimes = 0;
+	}
+
 protected:
     // protected so that users can't directly construct one of these...
     // force them to use the createChild() method.  Note that they CAN
@@ -122,6 +139,10 @@ protected:
         inverse = this->xform.inverse();
         normi = this->xform.upper33().inverse().transpose();
     }
+
+private:
+	int numOfTimes;
+	static mat4f motionBlurDelta;
 };
 
 class TransformRoot : public TransformNode
@@ -197,6 +218,13 @@ public:
     
 	Geometry( Scene *scene ) 
 		: SceneElement( scene ) {}
+
+	void motionBlurDeltaTranslate() {
+		transform->motionBlurDeltaTransform();
+	}
+	void motionBlurTranslateRestore() {
+		transform->resetMotionBlurTransform();
+	}
 
 protected:
 	BoundingBox bounds;
@@ -277,7 +305,18 @@ public:
         
 	Camera *getCamera() { return &camera; }
 
-	
+
+	//motion blur
+	void motionBlurObjectsDeltaTransform() {
+		for (giter i = objects.begin(); i != objects.end(); i++)
+			(*i)->motionBlurDeltaTranslate();
+	}
+	void motionBlurObjectRestore() {
+		for (giter i = objects.begin(); i != objects.end(); i++)
+			(*i)->motionBlurTranslateRestore();
+	}
+
+
 
 private:
     list<Geometry*> objects;

@@ -5,6 +5,15 @@
 #include "../ui/TraceUI.h"
 extern TraceUI* traceUI;
 
+
+mat4f TransformNode::motionBlurDelta(
+	vec4f(1.0, 0.0, 0.0, 0.01),
+	vec4f(0.0, 1.0, 0.0, 0.01),
+	vec4f(0.0, 0.0, 1.0, 0.01),
+	vec4f(0.0, 0.0, 0.0, 1.0)
+);
+
+
 void BoundingBox::operator=(const BoundingBox& target)
 {
 	min = target.min;

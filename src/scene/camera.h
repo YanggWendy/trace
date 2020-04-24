@@ -16,7 +16,8 @@ public:
     vec3f getU();
     vec3f getV();
     vec3f getLook();
-
+    vec3f getWorldCoords(double x, double y);
+    //bool resetRayCoords(ray& r);
     double getAspectRatio() { return aspectRatio; }
 private:
     mat3f m;                     // rotation matrix

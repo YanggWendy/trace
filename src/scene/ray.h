@@ -18,10 +18,26 @@ class SceneObject;
 class ray {
 public:
 	ray( const vec3f& pp, const vec3f& dd )
-		: p( pp ), d( dd ) {}
+		: p( pp ), d( dd ) {
+        //coords = nullptr;
+       /* coords =new double[2];
+        coords[0] = abs(d[0]) / sqrt(1 - d[0] * d[0] - d[1] * d[1])+0.5;
+        coords[1] = abs(d[1]) / sqrt(1 - d[0] * d[0] - d[1] * d[1])+0,5;*/
+      
+    }
 	ray( const ray& other ) 
-		: p( other.p ), d( other.d ) {}
-	~ray() {}
+		: p( other.p ), d( other.d ) {
+        //delete[]coords;
+      
+       /* coords = new double[2];
+        coords[0] = other.coords[0];
+        coords[1] = other.coords[1];*/
+    }
+    ~ray() {
+        /*if (coords)
+            delete[]coords;*/
+    }
+
 
 	ray& operator =( const ray& other ) 
 	{ p = other.p; d = other.d; return *this; }
@@ -32,9 +48,17 @@ public:
 	vec3f getPosition() const { return p; }
 	vec3f getDirection() const { return d; }
 
+   /* double* getCoordinates() 
+    { 
+        return coords; 
+    }*/
+
+    //void setCoords(double* coord) { coords = coord; }
+
 protected:
 	vec3f p;
 	vec3f d;
+    //double* coords;
 };
 
 // The description of an intersection point.

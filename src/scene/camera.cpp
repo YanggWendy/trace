@@ -106,3 +106,32 @@ vec3f Camera::getLook()
     return look;
 }
 
+vec3f Camera::getWorldCoords(double x, double y) {
+    x -= 0.5;
+    y -= 0.5;
+    vec3f result = eye + look + x * u + y * v;
+   
+    return result;
+}
+
+
+/*bool Camera::resetRayCoords(ray& r)
+{
+    vec3f viewDir = r.getDirection();
+    viewDir = (1.0f / (viewDir * look)) * viewDir;
+    if (viewDir * look < 0)
+        return false;
+    vec3f onPlaneDir = viewDir - look;
+
+    double deltaU = onPlaneDir.length() * (onPlaneDir * u) + 0.5;
+    double deltaV = onPlaneDir.length() * (onPlaneDir * v) + 0.5;
+
+    if (deltaU < 0 || deltaU > 1 || deltaV < 0 || deltaV > 1)
+        return false;
+
+    double* xy = new double[2];
+    xy[0] = deltaU;
+    xy[1] = deltaV;
+    r.setCoords(xy);
+    return true;
+}*/
